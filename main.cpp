@@ -6,7 +6,10 @@
 #include <random>
 #include <string>
 
-void adaptivePartitionSort(std::vector<int>& arr, int threshold);
+template<typename RandomIt>
+void timSort(RandomIt first, RandomIt last) {
+    std::sort(first, last);
+}
 
 void quickSort(std::vector<int>& arr, int low, int high, int threshold) {
     if (low >= high) {
@@ -102,11 +105,13 @@ int main() {
     std::vector<double> apsTimes(128);
     std::vector<double> bubbleTimes(128);
     std::vector<double> mergeTimes(128);
+    std::vector<double> timSortTimes(128);
+    std::vector<double> quickSortTimes(128);
 
     for (int i = 0; i < 128; i++) {
-        std::vector<int> randArr(10000);
-        for (int j = 0; j < 10000; j++) {
-            randArr[j] = gen() % 10001;
+        std::vector<int> randArr(100000);
+        for (int j = 0; j < 100000; j++) {
+            randArr[j] = gen() % 100001;
         }
 
         std::cout << "Iteration " << i + 1 << std::endl;
@@ -137,6 +142,24 @@ int main() {
         duration = end - start;
         mergeTimes[i] = duration.count();
         std::cout << "Merge END " << mergeTimes[i] << std::endl;
+
+        std::cout << "Tim Sort" << std::endl;
+        arr = randArr;
+        start = std::chrono::high_resolution_clock::now();
+        timSort(arr.begin(), arr.end());
+        end = std::chrono::high_resolution_clock::now();
+        duration = end - start;
+        timSortTimes[i] = duration.count();
+        std::cout << "Tim Sort END " << timSortTimes[i] << std::endl;
+
+        std::cout << "QuickSort" << std::endl;
+        arr = randArr;
+        start = std::chrono::high_resolution_clock::now();
+        quickSort(arr, 0, arr.size() - 1, 0);
+        end = std::chrono::high_resolution_clock::now();
+        duration = end - start;
+        quickSortTimes[i] = duration.count();
+        std::cout << "QuickSort END " << quickSortTimes[i] << std::endl;
     }
 
     std::ofstream file("data.csv");
@@ -145,9 +168,9 @@ int main() {
         return 1;
     }
 
-    file << "aps,bubble,merge" << std::endl;
+    file << "aps,bubble,merge,tim_sort,quick_sort" << std::endl;
     for (int i = 0; i < 128; i++) {
-        file << apsTimes[i] << "," << bubbleTimes[i] << "," << mergeTimes[i] << std::endl;
+        file << apsTimes[i] << "," << bubbleTimes[i] << "," << mergeTimes[i] << "," << timSortTimes[i] << "," << quickSortTimes[i] << std::endl;
     }
 
     file.close();
