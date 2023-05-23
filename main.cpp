@@ -104,9 +104,9 @@ int main() {
     std::vector<double> mergeTimes(128);
 
     for (int i = 0; i < 128; i++) {
-        std::vector<int> randArr(100000);
-        for (int j = 0; j < 100000; j++) {
-            randArr[j] = gen() % 100001;
+        std::vector<int> randArr(10000);
+        for (int j = 0; j < 10000; j++) {
+            randArr[j] = gen() % 10001;
         }
 
         std::cout << "Iteration " << i + 1 << std::endl;
